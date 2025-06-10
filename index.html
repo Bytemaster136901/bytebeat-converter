@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bytebeat Converter</title>
+  <style>
+    body { background: #111; color: #eee; font-family: monospace; padding: 20px; }
+    textarea, input, select, button {
+      font-family: monospace; background: #222; color: #0f0; border: 1px solid #444; padding: 6px;
+      margin-top: 6px;
+    }
+    textarea { width: 100%; height: 60px; }
+    pre { background: #222; padding: 10px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+<h2>🎵 Bytebeat ⇄ Floatbeat ⇄ Signed Converter</h2>
+
+<label>Sample Rate (Hz):</label>
+<input type="number" id="rate" value="8000">
+
+<label>Expression (use <code>t</code>):</label>
+<textarea id="input">(t*(t>>5|t>>8))&255</textarea>
+
+<label>From:</label>
+<select id="from">
+  <option value="byte">Bytebeat (0–255)</option>
+  <option value="signed">Signed Bytebeat (–128 to 127)</option>
+  <option value="float">Floatbeat (–1.0 to 1.0)</option>
+</select>
+
+<label>To:</label>
+<select id="to">
+  <option value="float">Floatbeat (–1.0 to 1.0)</option>
+  <option value="byte">Bytebeat (0–255)</option>
+  <option value="signed">Signed Bytebeat (–128 to 127)</option>
+</select>
+
+<button onclick="convert()">Convert & Download</button>
+
+<h3>Converted Expression:</h3>
+<pre id="output"></pre>
+
+<script>
+function convert() {
+  const rate = parseFloat(document.getElementById('rate').value);
+  const input = document.getElementById('input').value;
+  const from = document.getElementById('from').value;
+  const to = document.getElementById('to').value;
+
+  let expr = input;
+
+  if (from === 'byte') expr = '(' + expr + ' - 128)/128';
+  else if (from === 'signed') expr = '(' + expr + ')/128';
+  else if (from === 'float') expr = expr;
+
+  if (to === 'byte') expr = '(' + expr + '*128 + 128)&255';
+  else if (to === 'signed') expr = '(' + expr + '*128)&255-128';
+  else if (to === 'float') expr = expr;
+
+  document.getElementById('output').textContent = expr;
+  const blob = new Blob([expr], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'converted_code.txt';
+  a.click();
+}
+</script>
+
+</body>
+</html>
