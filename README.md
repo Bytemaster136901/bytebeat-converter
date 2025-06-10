@@ -6,4 +6,3 @@ A Bytebeat/Signed Bytebeat, Floatbeat converter
 
 <h2>Data</h2>
 I am later on going to work on making funcbeat work and add a minnibaker/deminibaker
-Let me know if you don't want the .txt files downloading on your device, just put it on issues ig for now
